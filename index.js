@@ -70,7 +70,7 @@ async function run() {
             const email = req.query.email;
 
             if (!email) {
-               return res.send([]);
+                return res.send([]);
             }
 
             const query = { email: email };
@@ -109,6 +109,17 @@ async function run() {
 
 
         // Admin routes 
+
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+
+            const query = { email: email }
+            const user = await usersCollection.findOne(query);
+            const result = { admin: user?.role === 'admin' }
+            res.send(result);
+        })
+
+
         app.patch('/users/admin/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
@@ -122,14 +133,19 @@ async function run() {
 
         })
 
-        app.get('/users/admin/:email', async (req, res) => {
-            const email = req.params.email;
 
-            const query = { email: email }
-            const user = await usersCollection.findOne(query);
-            const result = { admin: user?.role === 'admin' }
+        app.patch('/classes/permission/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const updateDoc = {
+                $set: {
+                    status: 'Approve'
+                },
+            }
+            const result = await classesCollection.updateOne(filter, updateDoc);
             res.send(result);
         })
+
 
 
         // Instructor routes
