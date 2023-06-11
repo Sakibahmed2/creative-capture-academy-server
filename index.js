@@ -86,6 +86,13 @@ async function run() {
             res.send(result);
         })
 
+        app.delete('/carts/:id', async(req, res) =>{
+            const id = req.params.id;
+            const quarey = {_id: new ObjectId(id)}
+            const result = await cartCollection.deleteOne(quarey)
+            res.send(result)
+        })
+
 
         // Users related apis
         app.get('/users', async (req, res) => {
